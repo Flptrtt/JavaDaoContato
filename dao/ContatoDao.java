@@ -105,13 +105,14 @@ public class ContatoDao {
 	}
 	
 	
-	public void excluir(Contato contato) throws SQLException {
+	public int excluir(Contato contato) throws SQLException {
 		String query = "delete from contatos where id=?";
 		PreparedStatement stmt = con.prepareStatement(query);
 		stmt.setLong(1, contato.getId());
-		stmt.execute();
+		int linhaResultado = stmt.executeUpdate();
 		stmt.close();
 		con.close();
+		return linhaResultado;
 	}
 	
 	

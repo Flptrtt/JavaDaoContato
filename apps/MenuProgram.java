@@ -20,7 +20,7 @@ public class MenuProgram {
 
 			do {
 				ContatoDao dao = new ContatoDao();// tem que instanciar dentro do loop por causa da conexão que é fechada nos metodos 
-				System.out.println("Escolha uma opção: \n1-Inserir contato\n2-Listar contatos\n3-Listar por inicial"
+				System.out.println("\nEscolha uma opção: \n1-Inserir contato\n2-Listar contatos\n3-Listar por inicial"
 						+ "\n4-Buscar por id\n5-Atualizar contato\n6-Remover contato\n7-Sair");
 
 				opcao = sc.nextInt();
@@ -42,7 +42,7 @@ public class MenuProgram {
 						dao.adiciona(contato);
 						System.out.println("gravação feita com sucesso");
 					} catch (SQLException e) {
-						e.printStackTrace();
+						System.out.println("Falha na gravação do registro.");
 					}
 					break;
 
@@ -51,8 +51,8 @@ public class MenuProgram {
 						List<Contato> contatos = dao.getLista();
 
 						for (Contato cont : contatos) {
-							System.out.println("\nNome: " + cont.getNome() + "\nEmail: " + cont.getEmail()
-									+ "\nEndereco: " + cont.getEndereco() + "\n");
+							System.out.println("Nome: " + cont.getNome() + " | Email: " + cont.getEmail()
+									+ " | Endereco: " + cont.getEndereco() + " | ");
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -67,8 +67,8 @@ public class MenuProgram {
 						List<Contato> contatos = dao.consultaInicial(sc.next().charAt(0));
 
 						for (Contato cont : contatos) {
-							System.out.println("\nNome: " + cont.getNome() + "\nEmail: " + cont.getEmail()
-									+ "\nEndereco: " + cont.getEndereco() + "\n");
+							System.out.println("Nome: " + cont.getNome() + " | Email: " + cont.getEmail()
+									+ " | Endereco: " + cont.getEndereco() + " | ");
 						}
 
 						sc.nextLine(); 
@@ -89,7 +89,7 @@ public class MenuProgram {
 				        if (contato == null) {
 				            System.out.println("Contato não encontrado.");
 				        } else {
-				            System.out.println("ID: " + contato.getId()+ "\nNome: " + contato.getNome()+ "\nEmail: " + contato.getEmail()+ "\nEndereco: " + contato.getEndereco()+ "\n");
+				            System.out.println("ID: " + contato.getId()+ " | Nome: " + contato.getNome()+ " | Email: " + contato.getEmail()+ " | Endereco: " + contato.getEndereco()+ " | ");
 				        }
 
 				    } catch (SQLException e) {
@@ -100,7 +100,17 @@ public class MenuProgram {
 				case 5:
 					System.out.println("Digite o id: ");
 					contato.setId(sc.nextLong());
+					
+					
+					contato = dao.buscarId(contato.getId());
 					sc.nextLine(); 
+					if (contato == null) {
+			            System.out.println("Contato não encontrado.");
+			        } else {
+			            System.out.println("ID: " + contato.getId()+ " | Nome: " + contato.getNome()+ " | Email: " + contato.getEmail()+ " | Endereco: " + contato.getEndereco()+ " | ");
+			        }
+					
+					ContatoDao daoatualiza = new ContatoDao();
 
 					System.out.println("Entre com novo nome: ");
 					contato.setNome(sc.nextLine());
@@ -111,7 +121,7 @@ public class MenuProgram {
 					System.out.println("Entre com novo endereco: ");
 					contato.setEndereco(sc.nextLine());
 
-					dao.atualizar(contato);
+					daoatualiza.atualizar(contato);
 					System.out.println("Informações atualizadas com sucesso");
 					break;
 
@@ -120,8 +130,15 @@ public class MenuProgram {
 					contato.setId(sc.nextLong());
 					sc.nextLine(); 
 
-					dao.excluir(contato);
-					System.out.println("Excluido com sucesso");
+					int linhasResultado = dao.excluir(contato);
+					
+					if (linhasResultado > 0) {
+				        System.out.println("Excluído com sucesso.");
+				    } else {
+				        System.out.println("Contato não encontrado.");
+				    }
+
+
 					break;
 
 				case 7:
